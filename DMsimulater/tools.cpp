@@ -17,7 +17,7 @@ template <class T> T checkIn(T type) {
 int rollxdyhz(int x, int y, int z)
 {
 	{
-		//_sleep(1000);
+		_sleep(1000);
 		srand((unsigned)time(NULL));
 		int* roll = new int[x];
 		int Modulus = y;

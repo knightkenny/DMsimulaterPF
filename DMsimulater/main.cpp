@@ -63,7 +63,7 @@ int main() {
 //	pCur->temp.check_character();
 //	pCur->temp.rollIt();
 //	pCur->temp.ability_change_one(1);
-	pCur->temp.ability_scores(11,20,21,22,23,24);
+	pCur->temp.creat_character();
 	pCur->temp.ability_get_all();
 //	pCur->temp.show_class();
 //	pCur->temp.change_weapon(0);

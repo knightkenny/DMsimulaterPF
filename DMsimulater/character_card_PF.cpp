@@ -600,8 +600,18 @@ character_card_pf::character_card_pf()
 
 void character_card_pf::creat_character()
 {
-	
-
+	system("cls");
+	cout << "新建角色开始" << endl
+		<< "选择属性获取方式"<<endl<<"1.购点 2.roll点";
+	int choice = checkIn(1);
+	switch (choice) {
+	case 1:
+		buyIt();
+		break;
+	case 2:
+		rollIt();
+		break;
+	}
 }
 
 void character_card_pf::Rcreat_character()
