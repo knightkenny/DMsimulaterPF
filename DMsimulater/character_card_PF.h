@@ -87,6 +87,10 @@ public:
 	//调整值不允许修改
 	void buyIt();//购点属性值
 	void rollIt();//roll属性值
+	void chooseRace();//选择种族
+
+	
+	
 
 	void show_armor(int No);//展示护甲属性
 	int change_armor(int No);//修改护甲属性
@@ -95,6 +99,7 @@ public:
 
 	void save_get_modifier();//规范化数据
 protected:
+	void chooseAdd();//选择属性加值
 	string name;//名字
 	string ali;//阵营
 	string race;//种族

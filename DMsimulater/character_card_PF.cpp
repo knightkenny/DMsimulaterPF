@@ -486,8 +486,8 @@ void character_card_pf::buyIt()
 void character_card_pf::rollIt()
 {
 	system("cls");
-	int done = 0;
-	while (done == 0) {
+	bool done = false;
+	while (done == false) {
 		STR[0] = rollxdyhz(4,6,3);
 		cout << endl;
 		DEX[0] = rollxdyhz(4, 6, 3);
@@ -499,12 +499,104 @@ void character_card_pf::rollIt()
 		WIS[0] = rollxdyhz(4, 6, 3);
 		cout << endl;
 		CHA[0] = rollxdyhz(4, 6, 3);
-		pause();
+		cout << endl;
+		check_character();
+		done = stopYes();
+		system("cls");
+	}
+	system("cls");
+	bool switchdone = false;
+	int* p[6] = { &STR[0],&DEX[0],&CON[0],&INT[0] ,&WIS[0] ,&CHA[0] };
+	int switchChoice[2] = { 7,7 };
+	cout << "改变属性分配";
+	switchdone = stopYes();
+	while (switchdone==false) {
+		switchChoice[0] = 7;
+		switchChoice[1] = 7;
+		ability_get_all();
+		cout << "选择两个属性交换(从上到下为1-6)";
+		while(switchChoice[0]>=7|| switchChoice[0] < 0)	switchChoice[0] = checkIn(1) - 1;
+		cout << "输入成功" << endl;
+		while (switchChoice[1] >= 7 || switchChoice[1] < 0)switchChoice[1] = checkIn(1) - 1;
+		cout << "输入成功" << endl;
+		switchit(p[switchChoice[0]], p[switchChoice[1]]);
 		check_character();
 		ability_get_all();
-		cout<<"\n是否重roll 0.是 1.结束\n";
-		done = checkIn(done);
+		switchdone = stopYes();
+		system("cls");
 	}
+}
+
+void character_card_pf::chooseRace() {
+	cout<<"请选择你要的种族\n1.人类  \t任意属性+2\t一个额外专长\n2.矮人  \t体质|感知+2\t魅力-2\n3.精灵  \t敏捷|智力+2\t体质-2\n4.侏儒  \t体质|魅力 +2\t力量-2\n5.半精灵\t任意属性+2\n6.半身人\t敏捷|魅力+2\t力量-2\n7.半兽人\t任意属性+2"<<endl;
+	int a = 0;
+	a=checkIn(a);
+	switch (a) {
+	case 1:
+		chooseAdd();
+		race = "人类";
+		break;
+	case 2:
+		race = "矮人";
+		CON[0] += 2;
+		WIS[0] += 2;
+		CHA[0] -= 2;
+		break;
+	case 3:
+		race = "精灵";
+		DEX[0] += 2;
+		INT[0] += 2;
+		CON[0] -= 2;
+		break;
+	case 4:
+		race = "侏儒";
+		CON[0] += 2;
+		CHA[0] += 2;
+		STR[0] -= 2;
+		break;
+	case 5:
+		race = "半精灵";
+		chooseAdd();
+		break;
+	case 6:
+		race = "半身人";
+		DEX[0] += 2;
+		CHA[0] += 2;
+		STR[0] -= 2;
+		break;
+	case 7:
+		race = "半兽人";
+		chooseAdd();
+		break;
+	}
+	check_character();
+	ability_get_all();
+}
+void character_card_pf::chooseAdd() {
+	cout<<"选择你要增加的属性 1.力量 2.敏捷 3.体质 4.智力 5.感知 6.魅力"<<endl;
+	int get = 0;
+	get=checkIn(get);
+	switch (get) {
+	case 1:
+		STR[0] += 2;
+		break;
+	case 2:
+		DEX[0] += 2;
+		break;
+	case 3:
+		CON[0] += 2;
+		break;
+	case 4:
+		INT[0] += 2;
+		break;
+	case 5:
+		WIS[0] += 2;
+		break;
+	case 6:
+		CHA[0] += 2;
+		break;
+	}
+	return;
 }
 
 void character_card_pf::show_armor(int No)
@@ -595,6 +687,8 @@ void character_card_pf::save_get_modifier()
 character_card_pf::character_card_pf()
 {
 	AC(1);
+	ability_scores();
+	check_character();
 	return;
 }
 
@@ -602,7 +696,7 @@ void character_card_pf::creat_character()
 {
 	system("cls");
 	cout << "新建角色开始" << endl
-		<< "选择属性获取方式"<<endl<<"1.购点 2.roll点";
+		<< "选择属性获取方式"<<endl<<"1.购点 2.roll点"<<endl;
 	int choice = checkIn(1);
 	switch (choice) {
 	case 1:
@@ -612,6 +706,27 @@ void character_card_pf::creat_character()
 		rollIt();
 		break;
 	}
+	cout << "输入名字"<<endl;
+	name = checkIn(name);
+	cout << "输入性别"<<endl;
+	gender = checkIn(gender);
+	cout << "输入阵营" << endl;
+	ali = checkIn(ali);
+	cout << "选择种族" << endl;
+	chooseRace();
+	cout << endl;
+	add_class();
+	bool done = false;
+	int i = 0;
+	while (done==false) {
+		cout << "输入专长名" << endl;
+		Feat[i] = checkIn(Feat[0]);
+		done = stopYes();
+	}
+	cout << "输入护甲数据" << endl;
+	change_armor(0);
+	cout << "输入武器数据" << endl;
+	change_weapon(0);
 }
 
 void character_card_pf::Rcreat_character()
@@ -741,7 +856,7 @@ void character_card_pf::add_class()
 				CLASS[i].magics[0][j] = checkIn(0);
 			}
 			system("cls");
-			cout << "创建成功\n";
+			cout << "创建职业成功\n";
 			system("pause");
 			system("cls");
 			return;

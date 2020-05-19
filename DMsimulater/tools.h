@@ -9,6 +9,8 @@ int rollxdyhz(int x = 1, int y = 20, int z = 1);//随机生成x个1~y的随机数从中选取
 int rollxdy_add(int x = 1, int y = 20, int add = 0);//随机生成x个1~y的随机数加上add的值
 int confirm();//输出确认语句
 void pause();//按下确认加清屏
-bool changeYes();
-int pay(int ability, int* point, int reduce);
+bool changeYes();//
+int pay(int ability, int* point, int reduce);//
+void switchit(int *a, int *b);//交换双方位置
+bool stopYes();//结束 结束返回true
 #endif

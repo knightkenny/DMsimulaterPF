@@ -91,6 +91,14 @@ bool changeYes()
 	return false;
 }
 
+void switchit(int* a, int* b)
+{
+	int temp;
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
 int pay(int ability, int* point, int reduce) {
 	if (reduce == -4) {
 		ability = 7;
@@ -143,4 +151,13 @@ int pay(int ability, int* point, int reduce) {
 	else {
 		return ability;
 	}
+}
+
+bool stopYes()
+{
+	cout << "ÊÇ·ñ½áÊø£¿(Yes/No)\n";
+	string choice;
+	cin >> choice;
+	if (choice.substr(0, 1) == "y")return true;
+	return false;
 }
