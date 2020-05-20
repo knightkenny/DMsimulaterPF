@@ -6,14 +6,15 @@ using namespace std;
 #define CHARACTER_CARD_PF
 class class_mod {
 public:
+	class_mod();
 	string class_name;//职业名称
-	int level=0;//等级
-	int class_BAB=0;//基础攻击加值
+	int level;//等级
+	int class_BAB;//基础攻击加值
 	int save_bouns[3];//豁免加值 0.强韧 1.反射 2.意志
-	int HPD=0;//生命骰大小
-	int HP = 0;//生命值
-	int skill_point=0;//技能点
-	int magics[2][9] = { {0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0} };//魔法使用次数
+	int HPD;//生命骰大小
+	int HP;//生命值
+	int skill_point;//技能点
+	int magics[2][9];//魔法使用次数
 };
 class items {
 public:
@@ -33,6 +34,7 @@ public:
 	weapon();
 	int dice[2];//0.骰子数量 1.骰子大小
 	int dmg_type[3];//0表示无1表示有 0.穿刺 1.钝击 2.挥砍
+	int criticalTimes[3];//0暴击倍率 1~2上下限
 };
 class armor : public equipment {
 public:
@@ -46,6 +48,8 @@ public:
 class character_card_pf {
 public:
 	character_card_pf();//默认构造函数
+	void main_borad();//角色管理主页面
+
 	void creat_character();//创造人物
 	void Rcreat_character();//随机创造人物
 	void read_character(string filename);//读取人物
@@ -133,5 +137,4 @@ protected:
 	class armor armors[2];//0 护甲 1 盾牌
 	weapon weapons[3];//武器123
 };
-
 #endif

@@ -24,10 +24,12 @@ items::items() {
 	value[1] = 0;
 	value[2] = 0;
 	weight = 0;
+	itemname = "无";
 }
 equipment::equipment() {
 	SA[0] = 0;
 	SA[1] = 0;
+	abilities = "无";
 }
 weapon::weapon() {
 	dice[0] = 0;
@@ -35,6 +37,9 @@ weapon::weapon() {
 	dmg_type[0] = 0;
 	dmg_type[1] = 0;
 	dmg_type[2] = 0;
+	criticalTimes[0] = 0;
+	criticalTimes[1] = 0;
+	criticalTimes[2] = 0;
 }
 armor::armor() {
 	bouns = 0;
@@ -647,7 +652,9 @@ void character_card_pf::show_weapon(int No)
 	cout << "物品名称  " << weapons[No].itemname << "+" << weapons[No].SA[0]
 		<< "\t价值  " << weapons[No].value[0] << " 金币 " << weapons[No].value[1] << " 银币 " << weapons[No].value[2] << " 铜币" << endl
 		<< "重量\t" << weapons[No].weight << endl
-		<< "伤害\t" << weapons[No].dice[0] << "d" << weapons[No].dice[1] << "+" << weapons[No].SA[0] << endl
+		<< "伤害\t" << weapons[No].dice[0] << "d" << weapons[No].dice[1] << "+" << weapons[No].SA[0] <<"   *"<< weapons[No].criticalTimes[0]
+		<<"("<< weapons[No].criticalTimes[1]<<"~"<< weapons[No].criticalTimes[2] <<")"<< endl
+		<< "额外能力：" << weapons[No].abilities<<endl
 		<< "伤害类型\n0 表示无 1 表示有 \n穿刺\t钝击\t挥砍" << endl;
 	for (int i = 0; i < 3; i++)	cout << weapons[No].dmg_type[i] << "\t";
 }
@@ -672,9 +679,16 @@ int character_card_pf::change_weapon(int No)
 	weapons[No].dice[0] = checkIn(1);
 	cout << "伤害骰子点数  ";
 	weapons[No].dice[1] = checkIn(1);
+	cout << "暴击倍率";
+	weapons[No].criticalTimes[0] = checkIn(1);
+	cout << "暴击范围下限";
+	weapons[No].criticalTimes[1] = checkIn(1);
+	cout << "暴击范围上限";
+	weapons[No].criticalTimes[2] = checkIn(1);
 	cout<< "伤害类型\n0 表示无 1 表示有 \n穿刺\t钝击\t挥砍" << endl;
 	for (int i = 0; i < 3; i++) weapons[No].dmg_type[i]=checkIn(0);
-	pause();
+	cout << "额外能力";
+	weapons[No].abilities = checkIn(weapons[No].abilities);
 	return 0;
 }
 
@@ -687,9 +701,96 @@ void character_card_pf::save_get_modifier()
 
 character_card_pf::character_card_pf()
 {
+	name = "unknown";
+	for (int i = 0; i < 10; i++)Feat[i] = "无";
 	AC(1);
 	ability_scores();
 	check_character();
+	return;
+}
+
+void character_card_pf::main_borad()
+{
+	if (name == "unknown") {
+		int choice=-1;
+		cout << "1.创建角色\n2.读取本地角色" << endl;
+		while (choice != 1 && choice != 2)choice = checkIn(choice);
+		switch (choice)
+		{
+		case 1:
+			creat_character();
+			break;
+		case 2:
+			string filename;
+			filename = checkIn(filename);
+			read_character(filename);
+		}
+		main_borad();
+		return;
+	}
+	bool stop = false;
+	bool substop;
+	int Mchoice;
+	int Inchoice;
+	while(!stop){
+		substop = false;
+		Mchoice = -1;
+		cout << "\t\t" << name << "管理面板" << endl
+			<< "1.基础数据管理\n2.AC管理\n3.属性值管理\n4.职业管理\n0.返回主程序";
+		while(Mchoice<0||Mchoice>4)Mchoice = checkIn(1);
+		switch (Mchoice) {
+			system("cls");
+		case 1:
+			while(!substop){
+				cout << "基础数据管理界面" << endl
+					<< "1.姓名\t" << name << "\t2.性别\t" << gender << endl
+					<< "3.种族\t" << race << "\t4.阵营\t" << ali << endl
+					<< "输入对应数字进行修改，输入0返回" << endl;
+				string temp;
+				Inchoice = -1;
+				while (Inchoice < 0 || Inchoice>4)Inchoice = checkIn(Inchoice);
+				switch (Inchoice) {
+				case 1:
+					cout << "输入姓名" << endl;
+					temp = checkIn(temp);
+					changeName(temp);
+					break;
+				case 2:
+					cout << "输入性别" << endl;
+					temp = checkIn(temp);
+					changeGender(temp);
+					break;
+				case 3:
+					cout << "输入种族（修改种族不会修改种族加值，请自行修改）" << endl;
+					temp = checkIn(temp);
+					changeRace(temp);
+					break;
+				case 4:
+					cout << "输入阵营" << endl;
+					temp = checkIn(temp);
+					changeAli(temp);
+					break;
+				case 0:
+					substop = stopYes();
+					break;
+				}
+			}
+			break;
+		case 2:
+			while (!substop) {}
+			break;
+		case 3:
+			while (!substop) {}
+			break;
+		case 4:
+			while (!substop) {}
+			break;
+		case 0:
+			stop = stopYes();
+			break;
+		}
+		
+	}
 	return;
 }
 
@@ -741,6 +842,13 @@ void character_card_pf::read_character(string filename)
 	pin.open(filename);
 	if (!pin.is_open()) {
 		cout << "打开失败";
+		bool stop;
+		stop = stopYes();
+		if (!stop) {
+			cout << "输入文件名" << endl;
+			filename = checkIn(filename);
+			read_character(filename);
+		}
 		return;
 	}
 	pin >> name >> ali >> race >> gender >> level;
@@ -785,6 +893,7 @@ void character_card_pf::read_character(string filename)
 			pin >> weapons[i].weight >> weapons[i].SA[0] >> weapons[i].SA[1]
 				>> weapons[i].abilities;
 			for (int j = 0; j < 2; j++)pin >> weapons[i].dice[j];
+			for (int j = 0; j < 3; j++)pin >> weapons[i].criticalTimes[j];
 			for (int j = 0; j < 3; j++)pin >> weapons[i].dmg_type[j];
 		}
 		AC(0);
@@ -840,6 +949,23 @@ void character_card_pf::save_character(int type)
 		}
 		pout << fortitude << " " << reflex << " " << will << " ";
 		pout << eb << " " << defb << " " << na << " " << dogb << " " << temporary << " ";
+		for (int i = 0; i < 2; i++) {
+			pout << armors[i].itemname << " ";
+			for (int k = 0; k < 3; k++)pout << armors[i].value[k] << " ";
+			pout << armors[i].weight << " " << armors[i].SA[0] << " " << armors[i].SA[1] << " "
+				<< armors[i].abilities << " " << armors[i].bouns << " " << armors[i].max_dex_bouns << " "
+				<< armors[i].check_penalty << " " << armors[i].spell_failure_chance << " "
+				<< armors[i].speed << " ";
+		}
+		for (int i = 0; i < 3; i++) {
+			pout << weapons[i].itemname << " ";
+			for (int k = 0; k < 3; k++)pout << weapons[i].value[k] << " ";
+			pout << weapons[i].weight << " " << weapons[i].SA[0] << " " << weapons[i].SA[1] << " "
+				<< weapons[i].abilities << " ";
+			for (int j = 0; j < 2; j++)pout << weapons[i].dice[j] << " ";
+			for (int j = 0; j < 3; j++)pout << weapons[i].criticalTimes[j] << " ";
+			for (int j = 0; j < 3; j++)pout << weapons[i].dmg_type[j] << " ";
+		}
 
 		break;
 	}
@@ -965,6 +1091,7 @@ void character_card_pf::show_class(int i)
 				cout << k << "环法术\t可释放次数" << CLASS[j].magics[0][k] << "\t剩余次数" << CLASS[j].magics[1][k] << endl;
 			}
 	}
+	pause();
 }
 
 void character_card_pf::alter_class()
@@ -1041,3 +1168,16 @@ void character_card_pf::reset_spell()
 	}
 }
 
+class_mod::class_mod()
+{
+	class_name="无";//职业名称
+	level = 0;//等级
+	class_BAB = 0;//基础攻击加值
+	for (int i = 0; i < 3; i++)save_bouns[i] = 0;
+	HPD = 0;//生命骰大小
+	HP = 0;//生命值
+	skill_point = 0;//技能点
+	for (int i = 0; i < 2; i++)
+		for (int j = 0; j < 10; j++)
+			magics[i][j] = 0;//魔法使用次数
+}

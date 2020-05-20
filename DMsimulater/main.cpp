@@ -58,17 +58,8 @@ int main() {
 		system("pause");
 	}
 	*/
-//	pCur->temp.add_class();
-	pCur->temp.read_character("test2.txt");
-//	pCur->temp.check_character();
-//	pCur->temp.rollIt();
-//	pCur->temp.ability_change_one(1);
-//	pCur->temp.creat_character();
-	pCur->temp.save_character();
-//	pCur->temp.ability_get_all();
-//	pCur->temp.show_class();
-//	pCur->temp.change_weapon(0);
-//	pCur->temp.show_weapon(0);
+	pCur->temp.main_borad();
+//	pCur->temp.read_character("2333");
 	return 0;
 
 }
