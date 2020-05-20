@@ -50,6 +50,7 @@ public:
 	void Rcreat_character();//随机创造人物
 	void read_character(string filename);//读取人物
 	void check_character();//检查数据计算是否合格
+	void save_character(int type = 1);//1.程序读取文件输出 2.人类读取文件输出
 
 	string getName();//返回名字
 	void changeName(string newName);//修改名字
@@ -88,9 +89,6 @@ public:
 	void buyIt();//购点属性值
 	void rollIt();//roll属性值
 	void chooseRace();//选择种族
-
-	
-	
 
 	void show_armor(int No);//展示护甲属性
 	int change_armor(int No);//修改护甲属性

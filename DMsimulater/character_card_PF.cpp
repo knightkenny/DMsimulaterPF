@@ -572,6 +572,7 @@ void character_card_pf::chooseRace() {
 	check_character();
 	ability_get_all();
 }
+
 void character_card_pf::chooseAdd() {
 	cout<<"选择你要增加的属性 1.力量 2.敏捷 3.体质 4.智力 5.感知 6.魅力"<<endl;
 	int get = 0;
@@ -770,7 +771,25 @@ void character_card_pf::read_character(string filename)
 		}
 		pin >> fortitude >> reflex >> will;
 		pin >> eb >> defb >> na >> dogb >> temporary;
+		for (int i = 0; i < 2;i++) {
+			pin >> armors[i].itemname;
+			for (int k = 0; k < 3; k++)pin >> armors[i].value[k];
+			pin >> armors[i].weight >> armors[i].SA[0] >> armors[i].SA[1]
+				>> armors[i].abilities >> armors[i].bouns >> armors[i].max_dex_bouns
+				>> armors[i].check_penalty >> armors[i].spell_failure_chance
+				>> armors[i].speed;
+		}
+		for (int i = 0; i < 3; i++) {
+			pin >> weapons[i].itemname;
+			for (int k = 0; k < 3; k++)pin >> weapons[i].value[k];
+			pin >> weapons[i].weight >> weapons[i].SA[0] >> weapons[i].SA[1]
+				>> weapons[i].abilities;
+			for (int j = 0; j < 2; j++)pin >> weapons[i].dice[j];
+			for (int j = 0; j < 3; j++)pin >> weapons[i].dmg_type[j];
+		}
 		AC(0);
+
+		pin.close();
 }
 
 void character_card_pf::check_character()
@@ -779,6 +798,52 @@ void character_card_pf::check_character()
 	hp = CLASS[0].HP + CLASS[1].HP + CLASS[2].HP;
 	ability_get_modifier();
 	save_get_modifier();
+}
+
+void character_card_pf::save_character(int type)
+{
+	ofstream pout;
+	string filename;
+	filename = checkIn(filename);
+	pout.open(filename);
+	switch (type) {
+	case 1:
+		if (!pout.is_open()) {
+			cout << "打开失败";
+			return;
+		}
+		pout << name<<" "<< ali << " " << race << " " << gender << " " << level << " ";
+		for (int i = 0; i < 3; i++) {
+			pout << CLASS[i].class_name << " " << CLASS[i].level << " " << CLASS[i].class_BAB << " " << CLASS[i].save_bouns[0] << " " << CLASS[i].save_bouns[1] << " " << CLASS[i].save_bouns[2] << " "
+				<< CLASS[i].HPD << " " << CLASS[i].HP << " " << CLASS[i].skill_point << " ";
+			for (int j = 0; j < 9; j++) pout << CLASS[i].magics[0][j] << " ";
+		}
+		pout << hp << " ";
+		for (int i = 0; i < 10; i++)pout << Feat[i] << " ";
+		for (int j = 0; j < 2; j++) {
+			pout << STR[j] << " ";
+		}
+		for (int j = 0; j < 2; j++) {
+			pout << DEX[j] << " ";
+		}
+		for (int j = 0; j < 2; j++) {
+			pout << CON[j] << " ";
+		}
+		for (int j = 0; j < 2; j++) {
+			pout << INT[j] << " ";
+		}
+		for (int j = 0; j < 2; j++) {
+			pout << WIS[j] << " ";
+		}
+		for (int j = 0; j < 2; j++) {
+			pout << CHA[j] << " ";
+		}
+		pout << fortitude << " " << reflex << " " << will << " ";
+		pout << eb << " " << defb << " " << na << " " << dogb << " " << temporary << " ";
+
+		break;
+	}
+	
 }
 
 string character_card_pf::getName()
