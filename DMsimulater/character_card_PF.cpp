@@ -905,6 +905,10 @@ void character_card_pf::main_borad()
 						break;
 				}
 			}
+			break;
+		case 6:
+			save_character();
+			break;
 		case 0:
 			stop = stopYes();
 			break;
