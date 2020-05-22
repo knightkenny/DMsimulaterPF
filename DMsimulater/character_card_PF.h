@@ -64,6 +64,7 @@ public:
 	void changeRace(string newRace);//修改种族
 	string getAli();//返回阵营
 	void changeAli(string newAli);//修改阵营
+
 	void add_class();//添加职业
 	void show_class(int i = 4);//展示职业信息
 	void alter_class();//修改职业
@@ -72,7 +73,7 @@ public:
 	void del_class(int classId);//删除职业
 	void reset_spell();//重置法术次数
 
-	void AC(int type = 1); //1.默认值 2.依次输入
+	void AC(int type = 1); //0.规范化 1.默认值 2.依次输入
 	void AC_change_all();//修改所有属性
 	int AC_get_all();//展示所有的属性
 	int AC_find_one(int type);//展示特定的属性并返回值
@@ -136,5 +137,6 @@ protected:
 
 	class armor armors[2];//0 护甲 1 盾牌
 	weapon weapons[3];//武器123
+	items item[10];//十件物品
 };
 #endif

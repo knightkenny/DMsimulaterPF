@@ -110,12 +110,14 @@ void character_card_pf::AC(int type)
 
 void character_card_pf::AC_change_all()
 {
+	/*
 	cout << "设置护甲加值";
 	armor = checkIn(0);
 	cout << "设置盾牌加值";
 	shield = checkIn(0);
 	cout << "设置敏捷调整值";
 	DEX_mod = checkIn(0);
+	*/
 	cout << "设置增强加值";
 	eb = checkIn(0);
 	cout << "设置偏斜加值";
@@ -126,9 +128,7 @@ void character_card_pf::AC_change_all()
 	dogb = checkIn(0);
 	cout << "设置临时调整值";
 	temporary = checkIn(0);
-	all = 10 + armor + shield + DEX_mod + eb + defb + na + dogb + temporary;
-	touch = 10 + DEX_mod + eb + defb + na + dogb + temporary;
-	flat = 10 + armor + shield + eb + defb + na + temporary;
+	AC(0);
 	return;
 }
 
@@ -147,8 +147,7 @@ int character_card_pf::AC_get_all()
 	cout << "\n闪避加值 dogb:\t\t"<<dogb;
 	cout << "\n临时调整值 temporary:\t" << temporary;
 	cout << endl;
-	system("pause");
-	system("cls");
+	pause();
 	return 0;
 }
 
@@ -275,9 +274,7 @@ int character_card_pf::AC_change_one()
 	cout << endl;
 	system("pause");
 	system("cls");
-	all = 10 + armor + shield + DEX_mod + eb + defb + na + dogb + temporary;
-	touch = 10 + DEX_mod + eb + defb + na + dogb + temporary;
-	flat = 10 + armor + shield + eb + defb + na + temporary;
+	AC(0);
 	return 0;
 }
 
@@ -616,6 +613,7 @@ void character_card_pf::show_armor(int No)
 		<< "\t护甲检定减值  " << armors[No].check_penalty
 		<< "\t最大敏捷加值" << armors[No].max_dex_bouns << endl
 		<< "额外能力：" << armors[No].abilities;
+	system("pause");
 }
 
 int character_card_pf::change_armor(int No)
@@ -733,15 +731,17 @@ void character_card_pf::main_borad()
 	int Mchoice;
 	int Inchoice;
 	while(!stop){
+		system("cls");
 		substop = false;
 		Mchoice = -1;
 		cout << "\t\t" << name << "管理面板" << endl
-			<< "1.基础数据管理\n2.AC管理\n3.属性值管理\n4.职业管理\n0.返回主程序";
-		while(Mchoice<0||Mchoice>4)Mchoice = checkIn(1);
+			<< "1.基础数据管理\n2.AC管理\n3.属性值管理\n4.职业管理\n5.物品管理\n6.角色导出\n0.返回主程序";
+		while(Mchoice<0||Mchoice>6)Mchoice = checkIn(1);
 		switch (Mchoice) {
 			system("cls");
-		case 1:
+		case 1://普通管理面板
 			while(!substop){
+				system("cls");
 				cout << "基础数据管理界面" << endl
 					<< "1.姓名\t" << name << "\t2.性别\t" << gender << endl
 					<< "3.种族\t" << race << "\t4.阵营\t" << ali << endl
@@ -776,15 +776,135 @@ void character_card_pf::main_borad()
 				}
 			}
 			break;
-		case 2:
-			while (!substop) {}
+		case 2://AC管理面板
+			while (!substop) {
+				system("cls");
+				cout << "AC管理面板\n1.查看AC\n2.修改全部AC\n3.修改某项AC\n输入0返回"<<endl;
+				Inchoice = -1;
+				while (Inchoice < 0 || Inchoice>3)Inchoice = checkIn(Inchoice);
+				switch (Inchoice) {
+				case 1:
+					AC_get_all();
+					break;
+				case 2:
+					AC_change_all();
+					break;
+				case 3:
+					AC_change_one();
+					break;
+				case 0:
+					substop = stopYes();
+					break;
+				}
+			}
 			break;
-		case 3:
-			while (!substop) {}
+		case 3://属性管理面板
+			while (!substop) {
+				system("cls");
+				cout << "属性管理面板\n1.查看所有属性\n2.修改所有属性\n3.修改某项属性输入\n输入0返回";
+				Inchoice = -1;
+				int temp = -1;
+				while (Inchoice < 0 || Inchoice>3)Inchoice = checkIn(Inchoice);
+				switch (Inchoice)
+				{
+				case 1:
+					ability_get_all();
+					break;
+				case 2:
+					cout << "输入STR"<<endl;
+					ability_change_one(1);
+					cout << "输入DEX" << endl;
+					ability_change_one(1);
+					cout << "输入CON" << endl;
+					ability_change_one(1);
+					cout << "输入INT" << endl;
+					ability_change_one(1);
+					cout << "输入WIS" << endl;
+					ability_change_one(1);
+					cout << "输入CHA" << endl;
+					ability_change_one(1);
+					break;
+				case 3:
+					cout << "输入你要修改的属性编号" << endl;
+					cout << "1.STR\t"<<endl;
+					cout << "2.DEX\t"<< endl;
+					cout << "3.CON\t"<< endl;
+					cout << "4.INT\t" << endl;
+					cout << "5.WIS\t"<< endl;
+					cout << "6.CHA\t"  << endl;
+					temp = checkIn(1);
+					break;
+				case 0:
+					substop = stopYes();
+					break;
+				}
+			}
 			break;
-		case 4:
-			while (!substop) {}
+		case 4://职业管理面板
+			while (!substop) {
+				system("cls");
+				int temp = -1;
+				Inchoice = -1;
+				cout << "职业管理面板\n1.展示所有职业信息\n2.展示特定职业信息\n3.添加新职业\n4.修改职业信息\n5.删除职业\n输入0退出" << endl;
+				while (Inchoice < 0 || Inchoice>5)Inchoice = checkIn(Inchoice);
+				switch (Inchoice) {
+				case 1:
+					show_class();
+					break;
+				case 2:
+					cout << "输入你要查看的职业序号" << endl;
+					for (int i = 0; i < 3; i++)if (CLASS[i].class_name != "无")cout << i+1 << ". " << CLASS[i].class_name;
+					temp = checkIn(1);
+					show_class(temp);
+					break;
+				case 3:
+					add_class();
+					break;
+				case 4:
+					cout << "输入你要更改的职业序号" << endl;
+					for (int i = 0; i < 3; i++)if (CLASS[i].class_name != "无")cout << i+1 << ". " << CLASS[i].class_name;
+					temp = checkIn(1);
+					alter_class(temp);
+					break;
+				case 5:
+					cout << "输入你要删除的职业序号" << endl;
+					for (int i = 0; i < 3; i++)if (CLASS[i].class_name != "无")cout << i+1 << ". " << CLASS[i].class_name;
+					temp = checkIn(1);
+					del_class(temp);
+					break;
+				case 0:
+					substop = stopYes();
+					break;
+				}
+			}
 			break;
+		case 5://物品管理面板
+			while (!substop) {
+				system("cls");
+				int temp = -1;
+				Inchoice = -1;
+				int Itemchoice = -1;
+				cout << "物品管理面板\n1.护甲相关\n2.武器相关\n3.道具相关\n输入0退出"<<endl;
+				while (Inchoice < 0 || Inchoice>3)Inchoice = checkIn(Inchoice);
+				switch (Inchoice) {
+				case 1:
+					cout << "1.查看护甲 2.修改护甲 3.删除护甲";
+					while (Itemchoice < 0 || Itemchoice>3)Itemchoice = checkIn(1);
+						switch (Itemchoice) {
+							cout << "1.护甲\t2.盾牌\n请输入你要操作的对象" << endl;
+							while (temp < 0 || temp>2)temp = checkIn(temp);
+						case 1:
+							show_armor(temp);
+							break;
+						case 2:
+							change_armor(temp);
+							break;
+						case 3:
+							armors[temp].itemname = "无";
+					}
+						break;
+				}
+			}
 		case 0:
 			stop = stopYes();
 			break;
@@ -1071,7 +1191,7 @@ void character_card_pf::show_class(int i)
 			for (int k = 0; k < 3; k++)cout << CLASS[j].save_bouns[k] << "\t";
 			cout << endl
 				<< "技能点  " << CLASS[j].skill_point<<endl;
-			for(int k=0;k<9;k++)
+			for(int k=0;k<=9;k++)
 				if (CLASS[j].magics[0][k] != 0) {
 					cout << k << "环法术\t可释放次数" << CLASS[j].magics[0][k] << "\t剩余次数"<< CLASS[j].magics[1][k] <<endl;
 				}
