@@ -738,6 +738,8 @@ character_card_pf::character_card_pf()
 {
 	name = "unknown";
 	for (int i = 0; i < 10; i++)Feat[i] = "无";
+	Initiative[0] = 0;
+	Initiative[1] = 0;
 	AC(1);
 	ability_scores();
 	check_character();
@@ -756,6 +758,7 @@ void character_card_pf::main_borad()
 			creat_character();
 			break;
 		case 2:
+			cout << "输入文件名(包含扩展名如.txt)";
 			string filename;
 			filename = checkIn(filename);
 			read_character(filename);
@@ -771,7 +774,7 @@ void character_card_pf::main_borad()
 		system("cls");
 		substop = false;
 		Mchoice = -1;
-		cout << "\t\t" << name << "管理面板" << endl
+		cout << "\t\t" << name << "的管理面板" << endl
 			<< "1.基础数据管理\n2.AC管理\n3.属性值管理\n4.职业管理\n5.物品管理\n6.角色导出\n0.返回主程序";
 		while(Mchoice<0||Mchoice>6)Mchoice = checkIn(1);
 		switch (Mchoice) {
@@ -782,10 +785,11 @@ void character_card_pf::main_borad()
 				cout << "基础数据管理界面" << endl
 					<< "1.姓名\t" << name << "\t2.性别\t" << gender << endl
 					<< "3.种族\t" << race << "\t4.阵营\t" << ali << endl
+					<<"5.先攻\t"<< Initiative[0]<<endl
 					<< "输入对应数字进行修改，输入0返回" << endl;
 				string temp;
 				Inchoice = -1;
-				while (Inchoice < 0 || Inchoice>4)Inchoice = checkIn(Inchoice);
+				while (Inchoice < 0 || Inchoice>5)Inchoice = checkIn(Inchoice);
 				switch (Inchoice) {
 				case 1:
 					cout << "输入姓名" << endl;
@@ -806,6 +810,10 @@ void character_card_pf::main_borad()
 					cout << "输入阵营" << endl;
 					temp = checkIn(temp);
 					changeAli(temp);
+					break;
+				case 5:
+					cout << "输入不含敏捷的先攻加值" << endl;
+					temp = checkIn(temp);
 					break;
 				case 0:
 					substop = stopYes();
@@ -1009,7 +1017,10 @@ void character_card_pf::main_borad()
 			}
 			break;
 		case 6:
-			save_character();
+			cout << "选择储存模式 1.机器读取 2.人类读取"<<endl;
+			Inchoice = -1;
+			while(Inchoice!=1&& Inchoice != 2)Inchoice = checkIn(Inchoice);
+			save_character(Inchoice);
 			break;
 		case 0:
 			stop = stopYes();
@@ -1103,6 +1114,7 @@ void character_card_pf::read_character(string filename)
 		for (int j = 0; j < 2; j++) {
 			pin >> CHA[j];
 		}
+		pin >> bab;
 		pin >> fortitude >> reflex >> will;
 		pin >> eb >> defb >> na >> dogb >> temporary;
 		for (int i = 0; i < 2;i++) {
@@ -1126,15 +1138,19 @@ void character_card_pf::read_character(string filename)
 			pin >> item[i].itemname >>  item[i].weight ;
 			for (int k = 0; k < 3; k++)pin >> item[i].value[k] ;
 		}
-		AC(0);
-
+		pin >> Initiative[0] >> Initiative[1];
+		check_character();
 		pin.close();
+		return;
 }
 
 void character_card_pf::check_character()
 {
 	AC(0);
-	hp = CLASS[0].HP + CLASS[1].HP + CLASS[2].HP;
+	level = CLASS[0].level + CLASS[1].level + CLASS[2].level;
+	hp = CLASS[0].HP + CLASS[1].HP + CLASS[2].HP+level*CON[1];
+	Initiative[0] = DEX[1] + Initiative[1];
+	bab = CLASS[0].class_BAB + CLASS[1].class_BAB + CLASS[2].class_BAB;
 	ability_get_modifier();
 	save_get_modifier();
 }
@@ -1143,6 +1159,7 @@ void character_card_pf::save_character(int type)
 {
 	ofstream pout;
 	string filename;
+	cout << "请输入保存文件名";
 	filename = checkIn(filename);
 	pout.open(filename);
 	switch (type) {
@@ -1177,6 +1194,7 @@ void character_card_pf::save_character(int type)
 		for (int j = 0; j < 2; j++) {
 			pout << CHA[j] << " ";
 		}
+		pout << bab << " ";
 		pout << fortitude << " " << reflex << " " << will << " ";
 		pout << eb << " " << defb << " " << na << " " << dogb << " " << temporary << " ";
 		for (int i = 0; i < 2; i++) {
@@ -1200,9 +1218,46 @@ void character_card_pf::save_character(int type)
 			pout << item[i].itemname << " " << item[i].weight << " ";
 			for (int k = 0; k < 3; k++)pout << item[i].value[k] << " ";
 		}
+		pout<< Initiative[0] << " " << Initiative[1] << " ";
+		break;
+	case 2:
+		pout << name << "\t" << level<<"   ";
+		for (int i = 0; i < 3; i++)if (CLASS[i].class_name != "无")pout << CLASS[i].class_name << " " << CLASS[i].level;
+		pout << endl << "先攻  " << Initiative[0] << "(敏捷+ " << DEX[1] << " 其他+  " << Initiative[1] <<")"<< endl;
+		pout << "——————防御能力——————" << endl
+			<< "防御等级 " << all << " 接触 " << touch << " 措手不及 " << flat << "(";
+		if (armors[0].bouns != 0)pout << "+" << armors[0].bouns << "护甲 ";
+		if (armors[1].bouns!=0)pout << "+" << armors[1].bouns << " 盾牌 ";
+		if (DEX[1]!=0)pout << "+" << DEX[1] << "敏捷 ";
+		if (eb != 0)pout << "+" << eb << "增强加值 ";
+		if (defb != 0)pout << "+" << defb << "偏斜加值 ";
+		if (na != 0)pout << "+" << na << " 天生护甲加值";
+		if (dogb != 0)pout << "+" << dogb << "闪避加值 ";
+		if (temporary != 0)pout << "+" << temporary << "临时调整值 ";
+		pout << ")" << endl<< "生命值 " << hp << "(";
+		for (int i = 0; i < 3; i++)if (CLASS[i].class_name != "无")pout << CLASS[i].level<<"d"<<CLASS[i].HPD;
+		pout << ")" << endl << "坚韧+ " << fortitude << " 反射+" << reflex << " 意志+" << will << endl;
+		pout << "攻击能力" << endl;
+		for (int i = 0; i < 3; i++) if (weapons[i].itemname != "无")pout << weapons[i].itemname
+			<< weapons[i].SA[0] << "+ " << bab << "  (" << weapons[i].dice[0] << "d" << weapons[i].dice[1] << "+" << STR[1]<<") *"<<weapons[i].criticalTimes[0]<<" "
+			<< weapons[i].criticalTimes[1]<<"~"<< weapons[i].criticalTimes[2] << endl;
+		pout << "施法能力" << endl;
+		for (int i = 0; i < 3; i++)
+			if (CLASS[i].class_name != "无"&&CLASS[i].magics[0][0]!=0){
+				pout << "CL " << CLASS[i].level << endl;
+				for (int j = 0; j < 10; j++) {
+					if (CLASS[i].magics[0][j] > 0) {pout << j << "环(" << CLASS[i].magics[0][j] << "次/天)"<<endl;}
+				}
+			}
+		pout << "数据" << endl
+			<< "力量 " << STR[0] << "敏捷 " << DEX[0] << "体质 " << CON[0] << " 智力 " << INT[0] << " 感知 " << WIS[0] << " 魅力 " << CHA[0] << endl;
+		pout << "基础攻击加值 " << bab << endl << "专长 ";
+		for (int i = 0; i < 10; i++)if (Feat[i] != "无")pout << " " << Feat[i];
+		for (int i = 0; i < 10; i++)if (item[i].itemname != "无")pout << " " << item[i].itemname;
+		pout << Initiative[0] << Initiative[1];
 		break;
 	}
-	
+	pout.close();
 }
 
 string character_card_pf::getName()
@@ -1243,6 +1298,16 @@ string character_card_pf::getAli()
 void character_card_pf::changeAli(string newAli)
 {
 	ali = newAli;
+}
+
+int character_card_pf::getInitiative()
+{
+	return Initiative[0];
+}
+
+int character_card_pf::getBab()
+{
+	return bab;
 }
 
 void character_card_pf::add_class()

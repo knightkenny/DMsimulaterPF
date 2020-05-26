@@ -64,6 +64,8 @@ public:
 	void changeRace(string newRace);//修改种族
 	string getAli();//返回阵营
 	void changeAli(string newAli);//修改阵营
+	int getInitiative();//返回先攻
+	int getBab();//返回基础攻击加值
 
 	void add_class();//添加职业
 	void show_class(int i = 4);//展示职业信息
@@ -113,9 +115,11 @@ protected:
 	string gender;//性别
 	int level;//人物等级
 	class class_mod CLASS[3];//职业
+	int Initiative[2];//先攻
 
 	int hp;//生命值
 	string Feat[10];//专长
+	int bab;//基础攻击加值
 	int STR[2];//力量 0为原值 1为调整值
 	int DEX[2];//敏捷 0为原值 1为调整值
 	int CON[2];//体质 0为原值 1为调整值
