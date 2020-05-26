@@ -690,6 +690,43 @@ int character_card_pf::change_weapon(int No)
 	return 0;
 }
 
+void character_card_pf::show_items(int No)
+{
+	cout << "物品名称\t" << item[No].itemname << "\t重量\t" << item[No].weight << endl
+		<< "金币\t银币\t铜币" << endl;
+	for (int i=0; i < 3; i++) {
+		cout << item[No].value[i]<<"\t";
+	}
+}
+
+void character_card_pf::show_items()
+{
+	for (int i = 0; i < 10; i++)show_items(i);
+}
+
+void character_card_pf::change_items(int No)
+{
+	cout << "输入物品名称";
+	item[No].itemname = checkIn(item[No].itemname);
+	cout << "重量  ";
+	item[No].weight = checkIn(item[No].weight);
+	cout << "价值\n" << "金币  ";
+	item[No].value[0] = checkIn(item[No].value[0]);
+	cout << "银币  ";
+	item[No].value[1] = checkIn(item[No].value[1]);
+	cout << "铜币  ";
+	item[No].value[2] = checkIn(item[No].value[2]);
+}
+
+void character_card_pf::del_items(int No)
+{
+	item[No].itemname = "无";
+	item[No].weight = 0;
+	item[No].value[0] = 0;
+	item[No].value[1] = 0;
+	item[No].value[2] = 0;
+}
+
 void character_card_pf::save_get_modifier()
 {
 	fortitude = CON[1] + CLASS[0].save_bouns[0] + CLASS[1].save_bouns[0] + CLASS[2].save_bouns[0];
@@ -891,18 +928,83 @@ void character_card_pf::main_borad()
 					cout << "1.查看护甲 2.修改护甲 3.删除护甲";
 					while (Itemchoice < 0 || Itemchoice>3)Itemchoice = checkIn(1);
 						switch (Itemchoice) {
+						case 1:
 							cout << "1.护甲\t2.盾牌\n请输入你要操作的对象" << endl;
 							while (temp < 0 || temp>2)temp = checkIn(temp);
-						case 1:
-							show_armor(temp);
+							show_armor(temp-1);
 							break;
 						case 2:
-							change_armor(temp);
+							cout << "1.护甲\t2.盾牌\n请输入你要操作的对象" << endl;
+							while (temp < 0 || temp>2)temp = checkIn(temp);
+							change_armor(temp-1);
 							break;
 						case 3:
-							armors[temp].itemname = "无";
+							cout << "1.护甲\t2.盾牌\n请输入你要操作的对象" << endl;
+							while (temp < 0 || temp>2)temp = checkIn(temp);
+							armors[temp-1].itemname = "无";
 					}
 						break;
+				case 2:
+					cout << "1.查看武器 2.修改武器 3.删除武器";
+					while (Itemchoice < 0 || Itemchoice>3)Itemchoice = checkIn(1);
+					switch (Itemchoice) {
+					case 1:
+						cout << "请输入你要操作的对象编号" << endl<<"1."<<weapons[0].itemname<<endl<<"2."<< weapons[0].itemname<<endl<<"3."<< weapons[0].itemname<<endl;
+						while (temp < 0 || temp>3)temp = checkIn(temp);
+						show_weapon(temp - 1);
+						break;
+					case 2:
+						cout << "请输入你要操作的对象编号" << endl << "1." << weapons[0].itemname << endl << "2." << weapons[0].itemname << endl << "3." << weapons[0].itemname << endl;
+						while (temp < 0 || temp>3)temp = checkIn(temp);
+						change_weapon(temp - 1);
+						break;
+					case 3:
+						weapons[temp - 1].itemname = "无";
+						break;
+					}
+					break;
+				case 3:
+					cout << "1.查看物品 2.修改物品 3.删除物品";
+					while (Itemchoice < 0 || Itemchoice>3)Itemchoice = checkIn(1);
+					switch(Itemchoice){
+					case 1:
+						cout << "请输入你要操作的对象编号" << endl;
+						for (int i = 0; i < 10; i++) {
+							cout << i << ". ";
+							if (item[i].itemname != "无")  cout << item[i].itemname;
+							cout << endl;
+						}
+						while (temp < 0 || temp>10)temp = checkIn(temp);
+						show_items(temp);
+						pause();
+						break;
+					case 2:
+						cout << "请输入你要操作的对象编号(为空则为无物品)" << endl;
+						for (int i = 0; i < 10; i++) {
+							cout << i << ". ";
+							if (item[i].itemname != "无") cout<< item[i].itemname ; 
+							cout<< endl;
+						}
+						while (temp < 0 || temp>10)temp = checkIn(temp);
+						change_items(temp);
+						pause();
+						break;
+					case 3:
+						cout << "请输入你要操作的对象编号(为空则为无物品)" << endl;
+						for (int i = 0; i < 10; i++) {
+							cout << i << ". ";
+							if (item[i].itemname != "无") cout << item[i].itemname;
+							cout << endl;
+						}
+						while (temp < 0 || temp>10)temp = checkIn(temp);
+						del_items(temp);
+						pause();
+						break;
+					}
+					break;
+				case 0:
+					substop = stopYes();
+					break;
 				}
 			}
 			break;
@@ -1020,6 +1122,10 @@ void character_card_pf::read_character(string filename)
 			for (int j = 0; j < 3; j++)pin >> weapons[i].criticalTimes[j];
 			for (int j = 0; j < 3; j++)pin >> weapons[i].dmg_type[j];
 		}
+		for (int i = 0; i < 11; i++) {
+			pin >> item[i].itemname >>  item[i].weight ;
+			for (int k = 0; k < 3; k++)pin >> item[i].value[k] ;
+		}
 		AC(0);
 
 		pin.close();
@@ -1090,7 +1196,10 @@ void character_card_pf::save_character(int type)
 			for (int j = 0; j < 3; j++)pout << weapons[i].criticalTimes[j] << " ";
 			for (int j = 0; j < 3; j++)pout << weapons[i].dmg_type[j] << " ";
 		}
-
+		for (int i = 0; i < 10; i++) {
+			pout << item[i].itemname << " " << item[i].weight << " ";
+			for (int k = 0; k < 3; k++)pout << item[i].value[k] << " ";
+		}
 		break;
 	}
 	

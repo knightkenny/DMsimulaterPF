@@ -99,6 +99,10 @@ public:
 	int change_armor(int No);//修改护甲属性
 	void show_weapon(int No);//展示武器属性
 	int change_weapon(int No);//修改武器属性
+	void show_items(int No);//展示物品属性
+	void show_items();//全部展示
+	void change_items(int No);//改变物品属性
+	void del_items(int No);//删除物品属性
 
 	void save_get_modifier();//规范化数据
 protected:
