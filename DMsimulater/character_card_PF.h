@@ -48,7 +48,7 @@ public:
 class character_card_pf {
 public:
 	character_card_pf();//默认构造函数
-	void main_borad();//角色管理主页面
+	string main_borad();//角色管理主页面
 
 	void creat_character();//创造人物
 	void Rcreat_character();//随机创造人物
@@ -66,6 +66,7 @@ public:
 	void changeAli(string newAli);//修改阵营
 	int getInitiative();//返回先攻
 	int getBab();//返回基础攻击加值
+	int getLevel();//返回等级
 
 	void add_class();//添加职业
 	void show_class(int i = 4);//展示职业信息

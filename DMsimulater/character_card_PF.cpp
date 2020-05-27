@@ -746,8 +746,9 @@ character_card_pf::character_card_pf()
 	return;
 }
 
-void character_card_pf::main_borad()
+string character_card_pf::main_borad()
 {
+	string filename="unknown";
 	if (name == "unknown") {
 		int choice=-1;
 		cout << "1.创建角色\n2.读取本地角色" << endl;
@@ -759,12 +760,11 @@ void character_card_pf::main_borad()
 			break;
 		case 2:
 			cout << "输入文件名(包含扩展名如.txt)";
-			string filename;
 			filename = checkIn(filename);
 			read_character(filename);
 		}
 		main_borad();
-		return;
+		return filename;
 	}
 	bool stop = false;
 	bool substop;
@@ -1028,7 +1028,7 @@ void character_card_pf::main_borad()
 		}
 		
 	}
-	return;
+	return "1";
 }
 
 void character_card_pf::creat_character()
@@ -1308,6 +1308,11 @@ int character_card_pf::getInitiative()
 int character_card_pf::getBab()
 {
 	return bab;
+}
+
+int character_card_pf::getLevel()
+{
+	return level;
 }
 
 void character_card_pf::add_class()

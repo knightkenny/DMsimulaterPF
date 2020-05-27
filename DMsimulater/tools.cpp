@@ -161,3 +161,12 @@ bool stopYes()
 	if (choice.substr(0, 1) == "y")return true;
 	return false;
 }
+
+bool delYes()
+{
+	cout << "ÊÇ·ñÉ¾³ý£¿(Yes/No)\n";
+	string choice;
+	cin >> choice;
+	if (choice.substr(0, 1) == "y")return true;
+	return false;
+}
