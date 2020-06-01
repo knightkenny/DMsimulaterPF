@@ -61,7 +61,71 @@ void showAll(struct card* head) {
 	return;
 }
 void pfTools(card* head) {
+	cout << "请选择你要使用的工具\n1.回合顺序\n2.地图模拟";
+	int choice=0;
+	int subchoice = -2;
+	bool stop = false;
+	bool substop = false;
+	choice = checkIn(choice);
+	switch (choice) {
+	case 1:
+		
+		break;
+	case 2:
+		board BD;
+		while (!stop) {
+			subchoice = -2;
+			system("cls");
+			BD.printBorad();
+			cout << "1.设置障碍\n2.设置地形\n3.设置棋子\n4.移动棋子\n5.载入地图\n-1退出功能\n请输入你要选择的功能\n";
+			subchoice = checkIn(subchoice);
+			switch (subchoice) {
+			case 1:
+				while (!substop) {
+					int x = -1, y = -1;
+					cout << "输入x坐标";
+					while (x < 0 || x>9)x = checkIn(x);
+					cout << "输入y坐标";
+					while (y < 0 || y>9)y = checkIn(y);
+					BD.setChess(x, y, 2);
+					substop = stopYes();
+				}
+				break;
+			case 2:
+				while (!substop) {
+					int x = -1, y = -1;
+					cout << "输入x坐标";
+					while (x < 0 || x>9)x = checkIn(x);
+					cout << "输入y坐标";
+					while (y < 0 || y>9)y = checkIn(y);
+					BD.setChess(x, y, 1);
+					substop = stopYes();
+				}
+				break;
+			case 3:
+				while (!substop) {
+					int x = -1, y = -1;
+					string name;
+					cout << "输入棋子名";
+					name = checkIn(name);
+					cout << "输入x坐标";
+					while (x < 0 || x>9)x = checkIn(x);
+					cout << "输入y坐标";
+					while (y < 0 || y>9)y = checkIn(y);
+					if (BD.searchChesses(name)) {
 
+					}
+					BD.setChess(x, y, 3);
+					substop = stopYes();
+				}
+				break;
+			case -1:
+				stop = stopYes();
+				break;
+			}
+		}
+	}
+	return;
 }
 void welcome() {
 	system("cls");
