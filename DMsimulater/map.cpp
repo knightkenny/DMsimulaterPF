@@ -96,12 +96,24 @@ bool board::searchChesses(string name)
 	return false;
 }
 
+bool board::searchChesses(int ID)
+{
+	if (chesses[ID].name != "unknown")return true;
+	return false;
+}
+
 int board::enptyID()
 {
 	for (int i = 0; i < 10; i++) {
-		if (chesses[i].getname == "unknown")return i;
+		if (chesses[i].name == "unknown")return i;
 	}
 	return -1;
+}
+
+bool board::block(int x, int y)
+{
+	if(boards[x][y]!=0)return true;
+	return false;
 }
 
 chess::chess()

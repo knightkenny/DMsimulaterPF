@@ -1134,7 +1134,7 @@ void character_card_pf::read_character(string filename)
 			for (int j = 0; j < 3; j++)pin >> weapons[i].criticalTimes[j];
 			for (int j = 0; j < 3; j++)pin >> weapons[i].dmg_type[j];
 		}
-		for (int i = 0; i < 11; i++) {
+		for (int i = 0; i < 10; i++) {
 			pin >> item[i].itemname >>  item[i].weight ;
 			for (int k = 0; k < 3; k++)pin >> item[i].value[k] ;
 		}

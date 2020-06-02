@@ -28,7 +28,9 @@ public:
 	void setChesses(int x=0,int y=0,string name = "unknown",int chessesId=0);//设置棋子数据
 	void showChesses();//展示棋子数据
 	bool searchChesses(string name);
+	bool searchChesses(int ID);
 	int enptyID();
+	bool block(int x,int y);
 private:
 	int boards[10][10];
 	chess chesses[10];

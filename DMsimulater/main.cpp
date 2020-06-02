@@ -27,7 +27,7 @@ void searchCard(struct card* head) {
 	cout << "输入查询卡角色名" << endl;
 	name = checkIn(name);
 	struct card* pSearch = head->next;
-	if (pSearch = NULL) {
+	if (pSearch == NULL) {
 		cout << "列表为空";
 		return;
 	}
@@ -69,11 +69,12 @@ void pfTools(card* head) {
 	choice = checkIn(choice);
 	switch (choice) {
 	case 1:
-		
+		cout << "暂未完工";
 		break;
 	case 2:
 		board BD;
 		while (!stop) {
+			substop = false;
 			subchoice = -2;
 			system("cls");
 			BD.printBorad();
@@ -87,7 +88,12 @@ void pfTools(card* head) {
 					while (x < 0 || x>9)x = checkIn(x);
 					cout << "输入y坐标";
 					while (y < 0 || y>9)y = checkIn(y);
-					BD.setChess(x, y, 2);
+					if (BD.block(x,y)) {
+						cout << "已存在其他物体，输入失败";
+					}
+					else {
+						BD.setChess(x, y, 2);
+					}
 					substop = stopYes();
 				}
 				break;
@@ -98,7 +104,12 @@ void pfTools(card* head) {
 					while (x < 0 || x>9)x = checkIn(x);
 					cout << "输入y坐标";
 					while (y < 0 || y>9)y = checkIn(y);
-					BD.setChess(x, y, 1);
+					if (BD.block(x,y)) {
+						cout << "已存在其他物体，输入失败";
+					}
+					else {
+						BD.setChess(x, y, 1);
+					}
 					substop = stopYes();
 				}
 				break;
@@ -112,10 +123,40 @@ void pfTools(card* head) {
 					while (x < 0 || x>9)x = checkIn(x);
 					cout << "输入y坐标";
 					while (y < 0 || y>9)y = checkIn(y);
-					if (BD.searchChesses(name)) {
-
+					if (BD.block(x,y)) {
+						cout << "已存在其他物体，输入失败";
 					}
-					BD.setChess(x, y, 3);
+					else{
+						if (!BD.searchChesses(name)) {
+							int ID = BD.enptyID();
+							if (ID != -1) {
+								BD.setChesses(x, y, name, ID);
+								BD.setChess(x, y, 3);
+							}
+							else {
+								cout << "棋子已满，请先删除再进行添加";
+							}
+						}
+					}
+					substop = stopYes();
+				}
+				break;
+			case 4:
+				while (!substop) {
+					int x = -1, y = -1;
+					int ID = 0;
+					cout << "请输入移动棋子的ID";
+					ID = checkIn(ID);
+					cout << "输入x坐标";
+					while (x < 0 || x>9)x = checkIn(x);
+					cout << "输入y坐标";
+					while (y < 0 || y>9)y = checkIn(y);
+					if (BD.block(x, y)) {
+						cout << "已存在其他物体，输入失败";
+					}
+					else {
+						BD.moveChess(x, y, ID);
+					}
 					substop = stopYes();
 				}
 				break;
@@ -220,8 +261,9 @@ int main() {
 						pPre->next = pSearch->next;
 					}
 				}
-				else if (pSearch->next != NULL) {
+				else if (pSearch->next == NULL) {
 					cout << "无此角色数据";
+					done = true;
 					system("pause");
 				}
 				else { 
