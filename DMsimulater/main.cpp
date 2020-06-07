@@ -26,6 +26,7 @@ struct card {
 void searchCard(struct card* head) {
 	if (head == NULL) {
 		cout << "没有数据";
+		pause();
 		return;
 	}
 	string name;
@@ -34,6 +35,7 @@ void searchCard(struct card* head) {
 	struct card* pSearch = head->next;
 	if (pSearch == NULL) {
 		cout << "列表为空";
+		pause();
 		return;
 	}
 	while (true) {
@@ -53,6 +55,7 @@ void searchCard(struct card* head) {
 void showAll(struct card* head) {
 	if (head == NULL) {
 		cout << "没有数据";
+		pause();
 		return;
 	}
 	cout << "姓名\t种族\t阵营\t等级" << endl;

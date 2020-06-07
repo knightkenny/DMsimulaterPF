@@ -656,6 +656,7 @@ void character_card_pf::show_weapon(int No)
 		<< "额外能力：" << weapons[No].abilities<<endl
 		<< "伤害类型\n0 表示无 1 表示有 \n穿刺\t钝击\t挥砍" << endl;
 	for (int i = 0; i < 3; i++)	cout << weapons[No].dmg_type[i] << "\t";
+	system("pause");
 }
 
 int character_card_pf::change_weapon(int No)
@@ -855,6 +856,7 @@ string character_card_pf::main_borad()
 				{
 				case 1:
 					ability_get_all();
+					pause();
 					break;
 				case 2:
 					cout << "输入STR"<<endl;
