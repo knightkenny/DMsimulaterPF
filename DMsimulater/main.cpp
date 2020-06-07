@@ -18,11 +18,15 @@ template <class T> T checkIn(T type) {
 	}
 }
 struct card {
-	character_card_pf temp;
-	string filename;
-	struct card* next;
+	character_card_pf temp;//数据
+	string filename;//生成自动读取文件
+	struct card* next;//下一个文件指针
 };
 void searchCard(struct card* head) {
+	if (head == NULL) {
+		cout << "没有数据";
+		return;
+	}
 	string name;
 	cout << "输入查询卡角色名" << endl;
 	name = checkIn(name);
@@ -46,6 +50,10 @@ void searchCard(struct card* head) {
 	}
 }
 void showAll(struct card* head) {
+	if (head == NULL) {
+		cout << "没有数据";
+		return;
+	}
 	cout << "姓名\t种族\t阵营\t等级" << endl;
 	struct card* show=head->next;
 	while (show!= NULL) {
@@ -61,6 +69,7 @@ void showAll(struct card* head) {
 	return;
 }
 void pfTools(card* head) {
+
 	cout << "请选择你要使用的工具\n1.回合顺序\n2.地图模拟";
 	int choice=0;
 	int subchoice = -2;
@@ -176,6 +185,7 @@ void welcome() {
 		<< "3.展示所有角色" << endl
 		<< "4.删除角色" << endl
 		<< "5.跑团工具" << endl
+		<< "6.进入角色面板" << endl
 		<< "0.退出系统" << endl;
 }
 int main() {
@@ -220,7 +230,7 @@ int main() {
 		done = false;
 		welcome();
 		choice = -1;
-		while (choice<0||choice>5)choice = checkIn(choice);
+		while (choice<0||choice>6)choice = checkIn(choice);
 		switch (choice) {
 		case 1:
 			system("cls");
@@ -247,7 +257,6 @@ int main() {
 			showAll(head);
 			break;
 		case 4:
-
 			cout << "输入删除卡角色名" << endl;
 			name = checkIn(name);
 			pSearch = head->next;
@@ -273,6 +282,28 @@ int main() {
 			break;
 		case 5:
 			pfTools(head);
+			break;
+		case 6:
+			showAll(head);
+			cout << "输入进入卡角色名" << endl;
+			name = checkIn(name);
+			pSearch = head->next;
+			pPre = head;
+			while (!done) {
+				if (name == pSearch->temp.getName()) {
+					done = true;
+					pSearch->temp.main_borad();
+				}
+				else if (pSearch->next == NULL) {
+					cout << "无此角色数据";
+					done = true;
+					system("pause");
+				}
+				else {
+					pPre = pSearch;
+					pSearch = pSearch->next;
+				}
+			}
 			break;
 		case 0:
 			KillPorgram = stopYes();
