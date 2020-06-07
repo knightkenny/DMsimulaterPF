@@ -1,3 +1,4 @@
+//tools.h
 #include "tools.h"
 template <class T> T checkIn(T type) {
 	T inTemp;

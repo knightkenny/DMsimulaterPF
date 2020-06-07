@@ -1,3 +1,4 @@
+//map.cpp
 #include "map.h"
 template <class T> T checkIn(T type) {
 	T inTemp;
